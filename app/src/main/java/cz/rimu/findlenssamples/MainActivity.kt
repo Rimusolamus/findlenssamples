@@ -3,6 +3,9 @@ package cz.rimu.findlenssamples
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,12 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import cz.rimu.findlenssamples.ui.theme.FindLensSamplesTheme
+import org.koin.androidx.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MyApp {
                 MyAppContent()
@@ -59,6 +63,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
+    //val viewModel: MainViewModel by viewModel()
+
     FindLensSamplesTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -72,7 +78,7 @@ fun MyApp(content: @Composable () -> Unit) {
 }
 
 @Composable
-fun MyAppContent(names: List<String> = List(50) { "Android $it" }) {
+fun MyAppContent() {
 
     var inputText by remember {
         mutableStateOf("")
@@ -172,7 +178,11 @@ fun SearchBar(
                 cursorColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
             ),
             trailingIcon = {
-                if (showClearButton) {
+                AnimatedVisibility(
+                    visible = showClearButton,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     IconButton(onClick = { onClearClick() }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
@@ -180,6 +190,7 @@ fun SearchBar(
                             tint = Color.White
                         )
                     }
+
                 }
             },
             maxLines = 1,
